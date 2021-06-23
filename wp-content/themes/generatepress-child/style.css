@@ -18,47 +18,32 @@ Updated: 2021-06-22 17:04:24
   color: #ffffff;
 }
 
+/*
 header {
-  /*margin-bottom: 0px;*/
-
-  background-color: cadetblue;
-}
-
-body {
-  /*margin-bottom: 0px;*/
-
-  background-color: darkkhaki;
-}
+  
+ background-color: ghostwhite;
+}*/
 
 #masthead {
+  
   /*margin: 0px;*/
   /*margin-bottom: 0px !important;*/
 
-  background-color: cornflowerblue;
+  background-color: #347B98;
 }
 
 #page {
   padding-top: 0px !important;
-  background-color: yellowgreen;
+  background-color: ghostwhite;
 }
 
 #content {
   padding-top: 0px !important;
   /*background-color: blue;*/
 }
-/*
-.site-branding {
-  padding: 0px;
-  margin: 0px;
-  background-color: burlywood;
-}*/
-/*
-.inside-header {
-  padding: 0px;
-}*/
 
 .entry-content {
-  margin-top: 0px !important;
+  margin-top: 10px !important;
   /*margin: 0;  */
-  background-color: burlywood;
+  /*background-color:cadetblue*/;
 }
