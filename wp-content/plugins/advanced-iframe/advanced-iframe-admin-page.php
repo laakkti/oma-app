@@ -12,7 +12,8 @@ defined('_VALID_AI') or die('Direct Access to this location is not allowed.');
 include_once dirname(__FILE__) . '/includes/advanced-iframe-admin-functions.php';
 include_once dirname(__FILE__) . '/includes/advanced-iframe-admin-quickstart.php';
 
-$version = '2021.1';
+global $aiVersion;
+$aiVersion = '2021.5';
 $updated = false;
 $evanto = (file_exists(dirname(__FILE__) . "/includes/class-cw-envato-api.php"));
 if (is_user_logged_in() && is_admin()) {
@@ -45,7 +46,7 @@ if (is_user_logged_in() && is_admin()) {
     if ($evanto) {
       $latest_version = $this->ai_getlatestVersion(); 
       if ($latest_version != -1) {
-        if (version_compare ($latest_version,$version) === 1) { 
+        if (version_compare ($latest_version, $aiVersion) === 1) { 
              if (!(isset($devOptions['closed_messages']) &&  isset($devOptions['closed_messages']['show-version-message']))) {
 				echo '<div id="show-version-message" class="notice notice-success is-dismissible is-permanent-closable"><p><strong>';
 				echo  __('Version ', 'advanced-iframe')  .$latest_version. __(' of Advanced iFrame Pro is available. See the <a href="//www.tinywebgallery.com/blog/advanced-iframe/advanced-iframe-history" target="_blank">history</a> for details. Please download the latest version from your download page of codecanyon.', 'advanced-iframe');
@@ -158,14 +159,14 @@ if (is_user_logged_in() && is_admin()) {
                        || $item === 'auto_zoom' || $item === 'show_part_of_iframe_zoom'
                        || $item === 'demo' ||  $item === 'enable_ios_mobile_scolling'
                        || $item === 'store_height_in_cookie' || $item === 'show_iframe_as_layer_full'
-                       || $item === 'use_post_message' || $item === 'multi_domain_enabled'
+                       || $item === 'use_post_message' 
                        || $item === 'enable_content_filter' || $item === 'add_ai_external_local'
                        || $item === 'check_iframe_cronjob' ||  $item === 'modify_iframe_if_cookie'
 					   || $item === 'add_ai_to_all_pages' || $item === 'remove_page_param_from_query') {
                           $text = 'false';
                      } else if ($item === 'show_menu_link' || $item === 'resize_on_ajax_jquery' 
                        || $item === 'show_iframe_as_layer_keep_content' ||  $item === 'admin_was_loaded' 
-					   || $item === 'single_save_button' ) {
+					   || $item === 'single_save_button' || $item === 'multi_domain_enabled' ) {
                          $text = 'true';
                      } else if ($item === 'resize_on_element_resize_delay') {
                          $text = '250';
@@ -236,7 +237,7 @@ if (is_user_logged_in() && is_admin()) {
              // we check if we have an invalid configuration!
              if ($devOptions['shortcode_attributes'] === 'false' && $devOptions['use_shortcode_attributes_only'] === 'true') {
                 $devOptions['shortcode_attributes'] = 'true';
-                printError(__('You have set "Allow shortcode attributes" to "No" and "Use shortcode attributes only" to "Yes". This combination is not valid. "Allow shortcode attributes" was set to "Yes". Please check if this is what you  want. "Allow shortcode attributes" overrules "Use shortcode attributes only" if you set "Use shortcode attributes only" directly in the shortcode with use_shortcode_attributes_only="true".', "advanced-iframe"));
+                AdvancedIframeHelper::aiPrintError(__('You have set "Allow shortcode attributes" to "No" and "Use shortcode attributes only" to "Yes". This combination is not valid. "Allow shortcode attributes" was set to "Yes". Please check if this is what you  want. "Allow shortcode attributes" overrules "Use shortcode attributes only" if you set "Use shortcode attributes only" directly in the shortcode with use_shortcode_attributes_only="true".', "advanced-iframe"));
                 $scrollposition = 0;
              }
           }
@@ -294,7 +295,7 @@ if ($evanto) {
 $isDemo =  $devOptions['demo'] === 'true';
     
     if ($evanto && clearstatscache($devOptions)) {
-      printError('Yo'+'ur ver'+'sion of Adv'+'anced iFr'+'ame Pro s'+'eems to be an ill'+'egal co'+'py and is now wo'+'rking in the fr'+ 'eeware m'+'ode ag'+'ain.<br />Ple'+'ase get the of'+'fical v'+'ersion from co'+'decanyon or co'+'ntact the au'+'thor thr'+'ough code'+'canyon if you th'+'ink this is a fa'+'lse al'+'arm.');
+      AdvancedIframeHelper::aiPrintError('Yo'+'ur ver'+'sion of Adv'+'anced iFr'+'ame Pro s'+'eems to be an ill'+'egal co'+'py and is now wo'+'rking in the fr'+ 'eeware m'+'ode ag'+'ain.<br />Ple'+'ase get the of'+'fical v'+'ersion from co'+'decanyon or co'+'ntact the au'+'thor thr'+'ough code'+'canyon if you th'+'ink this is a fa'+'lse al'+'arm.');
     }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              if (clearstatscache($devOptions)) {$evanto = false; }
     ?>
 <div id="ai" class="wrap">
@@ -336,7 +337,7 @@ $isDemo =  $devOptions['demo'] === 'true';
         if ($evanto) {
         _e('Pro', 'advanced-iframe');
         } 
-        echo ' <small>v' . $version. '</small>';  
+        echo ' <small>v' . $aiVersion. '</small>';  
         if ($evanto) {
           if ($is_latest) {
             echo ' <small class="hide-print"><small><small>' . __('(Your installation is up to date - <a href="//www.tinywebgallery.com/blog/advanced-iframe/advanced-iframe-history" target="_blank">view history</a>)', 'advanced-iframe') . '</small></small></small>';  
@@ -375,7 +376,7 @@ $isDemo =  $devOptions['demo'] === 'true';
 	}    
 	
 	aiPostboxOpen("id-search", "Read this first", $closedArray, '48%', " show-always postbox-container-space"); 	   
-	echo __('If you start using advanced iframe please read the quickstart guide on the options tab first. After that continue with an iframe like described on the basic tab. Only if the iframe appears add additional features. Go to the <a href="//www.tinywebgallery.com/blog/advanced-iframe/demo-advanced-iframe-2-0" target="_blank">free</a> and the <a href="//www.tinywebgallery.com/blog/advanced-iframe/advanced-iframe-pro-demo" target="_blank">pro demos</a> page for running examples.', 'advanced-iframe');
+	echo __('If you start using advanced iframe please read the "<a href="//www.tinywebgallery.com/blog/advanced-iframe/advanced-iframe-checklist" target="_blank">Advanced iframe checklist</a>" first. Then continue with the quickstart guide on the options tab. After that continue with an iframe like described on the basic tab. Only if the iframe appears add additional features. Go to the <a href="//www.tinywebgallery.com/blog/advanced-iframe/demo-advanced-iframe-2-0" target="_blank">free</a> and the <a href="//www.tinywebgallery.com/blog/advanced-iframe/advanced-iframe-pro-demo" target="_blank">pro demos</a> page for running examples.', 'advanced-iframe');
 
 	echo '<p>';
 	echo renderExampleIcon("javascript:void();");

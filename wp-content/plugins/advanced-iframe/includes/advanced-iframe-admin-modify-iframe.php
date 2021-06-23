@@ -123,13 +123,22 @@ echo "<hr height=1>";
     
     <h3 id="modifycontent"><?php _e('Modify the content of the iframe if the iframe page is on the same domain', 'advanced-iframe') ?><?php
     if ($evanto || $isDemo) {
-       _e(' or if you can use the external workaround.', 'advanced-iframe'); 
+       _e(' or if you can use the external workaround. ', 'advanced-iframe');   
     } else {
        echo '.';
     }
     ?>
 
     </h3>
+	<?php
+	 if ($evanto || $isDemo) {
+	   echo '<p>';
+	   _e('<strong>If you use the external wokaround add enable_external_height_workaround="true" to your shortcode!</strong> This is needed to disable the settings with the ', 'advanced-iframe');
+       echo renderExternalWorkaroundIcon(true);
+       _e(' for the same domain.', 'advanced-iframe');	
+	   echo '</p>';
+	 }
+	?>
     <p>
       <?php _e('With the following options you can modify the content of the iframe. <strong>IMPORTANT</strong>: This is only possible if the iframe comes from the <strong>same domain</strong> because of the <a href="https://en.wikipedia.org/wiki/Same_origin_policy" target="_blank">same origin policy</a> of Javascript.<p>If you can use the "<a id="external-workaround-link" href="#xss">External workaround</a>", you can also use this setting in the pro version.</p><p>Please read the section "<a class="howto-id-link" href="#">How to find the id and the attributes</a>" above how to find the right styles. If the content comes from a different domain you have to modify the iframe page by e.g. adding a Javascript function that is then called by the onload function you can set above or you add a parameter in the url that you can read in the iframe and display the page differently then. You should also use the external workaround to modify the iframe if your page loads quite slow and you see the modifications on subsequent pages. The reason is that the direct modification can only be done after the page is loaded and the "Hide until loaded" is only working for the 1st page. The external workaround is able to hide the iframe until it is modified always and also css can be added to the header directly.', 'advanced-iframe'); ?>
     </p>
@@ -141,7 +150,7 @@ echo "<hr height=1>";
 
 
         printTextInput(false,$devOptions, __('Hide elements in iframe', 'advanced-iframe'), 'iframe_hide_elements', __('This setting allows you to hide elements inside the iframe. This can be used to hide e.g. a div or a heading. Usage: If you want to hide a div you have to enter a hash (#) followed by the id e.g. #header. If you want to hide a heading which is a &lt;h2&gt; you have to enter h2. You can define several elements separated by , e.g. #header,h2. I recommend using firebug to find the elements and the ids. You can use any valid <a class="jquery-help-link" href="#">jQuery selector pattern</a> here! Also the width and height of the elements are set to 0 because e.g. auto height or auto zoom could have problems measuring! Shortcode attribute: iframe_hide_elements=""', 'advanced-iframe'),'text','//www.tinywebgallery.com/blog/advanced-iframe/advanced-iframe-pro-demo/external-workaround-auto-height-and-css-modifications', $evanto || $isDemo);
-        printTextInput(false,$devOptions, __('Show only one element', 'advanced-iframe'), 'onload_show_element_only', __('You can define which part of the page should be shown in the iframe. You can define the id (e.g. #id) or the class (.class) which should be shown. Be aware that all other elements below the body are removed! So if your css relies on a certain structure you have to add additional css by "Content id in iframe" below. Very often also a background is defined for the header which you should remove below. e.g. by setting background-image: none; in the body. This can be done at "Content id in iframe" and "Content styles in iframe" below. Shortcode attribute: onload_show_element_only=""', 'advanced-iframe'),'text', '//www.tinywebgallery.com/blog/advanced-iframe/advanced-iframe-pro-demo/external-workaround-auto-height-and-css-modifications#e7', $evanto || $isDemo);
+        printTextInput(false,$devOptions, __('Show only one element', 'advanced-iframe'), 'onload_show_element_only', __('You can define which part of the page should be shown in the iframe. You can define the id (e.g. #id) or the class (.class) which should be shown. <strong>Be aware that all other elements below the body are removed!</strong>. Many webpages do NOT work fully anymore (sometimes do not show anymore) if you change the page structure! So if your Javascript/css relies on a certain structure you e.g. have to add additional css by "Content id in iframe" below.<br>I recommend to use the "Hide elements in iframe" if you have problems here. There the structure stays like before. Only elements are hidden! Often a background is defined for the header which you can remove below e.g. by setting background-image: none; in the body. This can be done at "Content id in iframe" and "Content styles in iframe" below. Shortcode attribute: onload_show_element_only=""', 'advanced-iframe'),'text', '//www.tinywebgallery.com/blog/advanced-iframe/advanced-iframe-pro-demo/external-workaround-auto-height-and-css-modifications#e7', $evanto || $isDemo);
 echo '</table>';
 echo '<p id="id-modify-css-iframe">';
        _e('With the next 2 options you can modify the css of your iframe if <strong>it is on the same domain</strong> or if you can use the external workaround and have the pro version. This settings are save to the ai_external.js. The first option defines the id/class/element you want to modify and at the 2nd option you define the styles you want to change.', 'advanced-iframe');

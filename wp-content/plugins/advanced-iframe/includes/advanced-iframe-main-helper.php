@@ -204,7 +204,10 @@ class AdvancedIframeHelper {
 	}
 
     static function replace_url_path_data($str_input) {     
-        if (strpos($str_input,'{urlpath') !== false) {
+        if (strpos($str_input,'{requesturi}') !== false) {
+			$str_input .= trim($_SERVER['REQUEST_URI']);
+		}
+		if (strpos($str_input,'{urlpath') !== false) {
             // part of the url are extracted {urlpath1} = first path element
             $path_elements = explode("/", trim($_SERVER['REQUEST_URI'], "/"));
             $count = 1;
@@ -233,6 +236,9 @@ class AdvancedIframeHelper {
 	}
 	
 	static function check_debug_get_parameter() {
+		 if (isset($_GET['aiEDC'])) {
+	         $_GET['aiEnableDebugConsole'] = $_GET['aiEDC'];
+		 }
 		 if (isset($_GET['aiEnableDebugConsole'])) {
 			if ($_GET['aiEnableDebugConsole'] === 'true') {
 			  setcookie('aiEnableDebugConsole', 'bottom', 0, '/');
@@ -269,6 +275,69 @@ class AdvancedIframeHelper {
     static function allowIframeOpen($selector) {   
 		return !isset($_COOKIE['ai_disable_autoclick_iframe_' . $selector]);
 	}
+	
+	static function ai_startsWith($haystack, $needle) {
+	    return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== FALSE;
+	}
+
+    static function ai_endsWith($haystack, $needle) {         
+		return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
+    }
+	
+	/**
+	 * Checks the parameter and returns the value. If only chars on the whitelist are in the request nothing is done
+	 * Otherwise it is returned encoded.
+	 */
+	static function param($param, $content = null)
+	{
+		// get and post parameters are checked. if both are set the get parameter is used.
+		$value = isset($_GET[$param]) ? $_GET[$param] : (isset($_POST[$param]) ? $_POST[$param] : '');
+
+		if (is_array($value)) {
+			$value = $value[0];
+		}
+		$value_check = $value;
+		// first we decode the param to be sure the it is not already encoded or doubleencoded as part of an attack
+		while ($value_check != @urldecode($value_check)) {
+			$value_check = @urldecode($value_check);
+		}
+		// If all chars are in the whitelist no additional encoding is done!
+		if (@preg_match('/^[\.@~a-zA-Z0-9À-ÖØ-öø-ÿ\-\|\)\(]*$/', $value_check)) {
+			return $value;
+		} else {
+			return @urlencode($value);
+		}
+	}
+	
+	static function aiContains($str, $substr) {
+		return strpos($str, $substr) !== false;
+	}
+	
+	/**
+	* remove query string and trailing backslash
+	*/
+	static function aiRemoveQueryString($str) {
+		if (AdvancedIframeHelper::aiContains($str,'?')) {
+			$value = strstr($str, '?', true);
+			return rtrim($value, '/');
+		} else {
+			return $str;	
+		}
+	}
+	
+	static function aiContainsParam($str, $substr) {
+        $substr .= '=';
+	    return strpos($str, '?' . $substr) !== false || strpos($str, '&amp;' . $substr) !== false;
+    }
+	
+	static function aiPrintError($message) {
+            echo '
+           <div class="error">
+              <p><strong>' . $message . '
+                 </strong>
+              </p>
+           </div>';
+        }
 }
 
 ?>

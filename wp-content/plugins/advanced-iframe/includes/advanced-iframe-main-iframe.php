@@ -47,7 +47,11 @@ if ($debug_js != 'false' && !isset($_REQUEST['debugRendered'])) {
 	console.warn = function(){
 		console.defaultWarn.apply(console, arguments);
 		console.warns.push(Array.from(arguments));
-		var content = "<" + "p class=\'ai-debug-local\'> l: WARN: " + [].map.call(arguments, JSON.stringify) + "<" + "/" + "p>";
+        var consoleData = [].map.call(arguments, JSON.stringify); 
+		consoleData += "";
+		consoleData = consoleData.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); 
+		consoleData = consoleData.replace(\'\"\', \'"\').replace(/\\\\/g,"");
+		var content = "<" + "p class=\'ai-debug-local\'> l: WARN: " + consoleData + "<" + "/" + "p>";
         jQuery("#aiDebugDiv").append(content);
 	}
 	console.defaultError = console.error.bind(console);
@@ -55,7 +59,11 @@ if ($debug_js != 'false' && !isset($_REQUEST['debugRendered'])) {
 	console.error = function(){
 		console.defaultError.apply(console, arguments);
 		console.errors.push(Array.from(arguments));
-		var content = "<" + "p class=\'ai-debug-local\'> l: ERROR: " + [].map.call(arguments, JSON.stringify) + "<" + "/" + "p>";
+		var consoleData = [].map.call(arguments, JSON.stringify); 
+		consoleData += "";
+		consoleData = consoleData.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); 
+		consoleData = consoleData.replace(\'\"\', \'"\').replace(/\\\\/g,"");
+		var content = "<" + "p class=\'ai-debug-error\'> l: ERROR: " + consoleData + "<" + "/" + "p>";
         jQuery("#aiDebugDiv").append(content);
 	}
     window.onerror = function (msg, url, lineNo, columnNo, error) {
@@ -263,13 +271,11 @@ if ($show_iframe_as_layer_div) {
         
    }
 }
-$parent_http = site_url();
-if ($this->ai_startsWith(strtolower($src), "http://") && 
-    $this->ai_startsWith(strtolower($parent_http), "https://")) {
+
+if ($this->ai_startsWith(strtolower($src), "http://") && AdvancedIframeHelper::isSecure()) {
   // show a warning if https pages are shown in http pages.
   $html .= 'Http iframes are not shown in https pages in many major browsers. Please read <a href="//www.tinywebgallery.com/blog/iframe-do-not-mix-http-and-https" target="_blank">this post</a> for details.';
-} else if ($this->ai_startsWith(strtolower($src), "https:") && 
-    $this->ai_startsWith(strtolower($parent_http), "http:") &&
+} else if ($this->ai_startsWith(strtolower($src), "https:") && !AdvancedIframeHelper::isSecure() &&
     $enable_external_height_workaround === "true" && $use_post_message === 'false' ) {
     $html .= 'You use a https iframe in a http page with the external workaround. To enable the external workaround you NEED to enable "Use postMessage for communication" on the "external workaround" tab.';
 } 
@@ -277,6 +283,11 @@ if ($this->ai_startsWith(strtolower($src), "http://") &&
 if (isset($_COOKIE['aiEnableDebugConsole'])) {
 	$sep = (strpos($src, '?') === false)? '?': "&amp;";
 	$src .= $sep . 'send_console_log=true';
+} else 
+
+if ((isset($_GET['aiEDC']) && $_GET['aiEDC'] === 'false') || (isset($_GET['aiEnableDebugConsole']) && $_GET['aiEnableDebugConsole'] === 'false')) { 
+    $sep = (strpos($src, '?') === false)? '?': "&amp;";
+    $src .= $sep . 'send_console_log=false';
 }
 
 if ($src_hide != '') {

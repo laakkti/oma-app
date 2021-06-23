@@ -17,8 +17,8 @@ if (isset($aip_standalone)) {
  // load standalone settings
  extract($iframeStandaloneOptions);
 
- // check id
-                 // autovalue if no id is set but a src
+   // check id
+  // autovalue if no id is set but a src
   if (!isset($iframeStandaloneOptions['id'])) {
      global $instance_counter;
 
@@ -611,4 +611,16 @@ if ($show_iframe_as_layer === 'true' || $show_iframe_as_layer === 'external') {
      $style = "width:100%;height:100%";
    }
 }
+
+global $aiIdCounter; 
+
+if (isset($aiIdCounter)) {
+	if (in_array($id, $aiIdCounter)) {
+        echo '<script>if (console && console.error) { console.error("Advanced iframe configuration error: Duplicate id \"' . $id . '\" for iframes found. Not all iframes will work like expected! Please give each iframe a unique id!") }</script>';
+    } else if (empty($browser)) {
+	    $aiIdCounter[] = $id; 
+    }
+} else if (empty($browser)) {
+	$aiIdCounter = array($id);
+}  
 ?>

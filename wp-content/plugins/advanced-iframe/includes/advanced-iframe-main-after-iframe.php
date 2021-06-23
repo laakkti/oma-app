@@ -226,8 +226,8 @@ if (!empty($resize_on_element_resize)) {
     }
     if (res_element.length === 0) {
                 // show an error if null
-                if (console && console.log) {                  
-                     console.log(\'The configuration of "resize_on_element_resize" is invalid. The specified element ' . esc_html($resize_on_element_resize) . ' could not be found or accessed. Please check your configuration.\');
+                if (console && console.error) {                  
+                     console.error(\'Advanced iframe configuration error: The configuration of "resize_on_element_resize" is invalid. The specified element "' . esc_html($resize_on_element_resize) . '" could not be found or accessed. Please check your configuration.\');
                 }  
     } else {   
         // if Array.isArray
@@ -241,9 +241,6 @@ if (!empty($resize_on_element_resize)) {
                });
             }
     }';
-  
-  // now done in the onload event.
-  // $html .= 'aiReadyCallbacks.push(initResizeIframe' . $id . ');';
   $html .= '</script>';
 }
 

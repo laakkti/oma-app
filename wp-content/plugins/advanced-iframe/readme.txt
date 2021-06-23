@@ -3,18 +3,18 @@ Contributors: mdempfle
 Donate link: http://www.tinywebgallery.com
 Tags: iframe, embed, resize, zoom, content, advanced, shortcode, modify css, widget 
 Requires at least: 3.2
-Tested up to: 5.7
-Stable tag: 2021.1
+Tested up to: 5.7.2
+Stable tag: 2021.5
 Requires PHP: 5.4
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License: Envato market standard or extended license
+License URI: https://themeforest.net/licenses/standard
 
-Include content the way YOU like in an iframe that can hide and modify elements and foreward parameters. You can also embed content directly.
+Include content the way YOU like in an iframe that can hide and modify elements, does auto height, forward parameters and does many, many more...
 
 == Description ==
 > **[Advanced iFrame Pro](https://1.envato.market/b1vbg)** | 
 > **[Demo](http://www.tinywebgallery.com/blog/advanced-iframe/demo-advanced-iframe-2-0)**
-Include content the way YOU like in an iframe that can hide and modify elements and foreward parameters. You can also embed content directly or show a part of an iframe.
+Include content the way YOU like in an iframe that can hide and modify elements and forward parameters. You can also embed content directly or show a part of an iframe.
 
 = Main features of advanced iframe =
 By entering the shortcode '[advanced_iframe]' you can include any webpage to any page or article. 
@@ -22,7 +22,7 @@ The following cool features compared to a normal iframe are implemented:
 
 - Hide areas of the layout to give the iframe more space (see screenshot) 
 - Show only specific areas of the iframe when the iframe is on a same domain (The Pro version supports this on different domains) or include parts directly by jQuery
-- Modify css styles in the parent and the iframe to e.g. change the width of the content area (see screenshot)
+- Modify css styles in the parent and the iframe to e.g. change the width of the content area (see screen-shot)
 - Forward parameters to the iframe 
 - Resize the iframe to the content height or width on loading, AJAX or click 
 - Scroll the parent to the top when the iframe is loaded
@@ -164,11 +164,49 @@ Simply overwrite all files from your previous installation.
 If you have some radio elements empty after the update simply 
 select the one you like and save again.
 
-
 == Change log ==
+== 2021.5 ==
+- New: New replace parameter {requesturi}: The full request uri from the parent is added to the iframe. So everything behind the domain will be added to the iframe! E.g. www.domain.com/abc/cde -> www.iframe.com/abc/cde, www.domain.com/abc/cde/index.php -> www.iframe.com/abc/cde/index.php, www.domain.com/abc/cde/index.php?avc=3 -> www.iframe.com/abc/cde/index.php?abc=3
+- New: When debugging external post messages the received message is now printed to the console log. 
+- New: The plugin version is now added automatically to the ai_external.js + ai.min.js
+- New: Tested with Wordpress 5.7.2
+- Fix: Some setups could have "parent.postMessage" not found in the ai_external.js.
+- Fix: When using Gutenberg a </div> was rendered too much in some cases. Thanks to harrinsonmb who found the issue.
+- Fix: Undefined variable $debug_js ... fixed when all-in-seo is installed and E_WARNING is enabled.
+
+== 2021.4 ==
+- New: Improved documentation of "Show only one element" and of "URL forward parameters"
+- New: The auto update link on the right which is available since WP 5.5 is now disabled for the pro version. For automatic updates for codecanyon please use https://envato.com/market-plugin/  
+- New: Generated files are now only generated when advanced iframe was updated. The code introduced in 2021.2 was running on each update!
+- Fix: php 8 issue "Call to undefined function printError()" not found fixed. Happened also during update of other plugins as the new hook to generate missing files is triggered there as well.
+- Fix: Disable output during update. Errors/warnings are only shown inside the plugin.
+- Fix: Error in hashrewrite fixed. After refactoring a method needs to be called differently.
+- Fix: The origin check url for post messages was invalid as during refactoring a ! was deleted by accident. Now this works fine again. If no origin check url can be detected now the origin check is disabled. This fix is important as the external woraround with auto heigt was not working anymore in some situations!
+- Fix: Add url to param was not always adding https correctly. This caused the "Http iframes are not shown in https pages in many major browsers..." message for some users.
+
+== 2021.3 ==
+- New: Tested with php 8 and Wordpress 5.7.1
+- Fix: Fatal error with php 8 fixed! 
+- Fix: Handle cannot be saved issue with php 8 fixed.
+
+= 2021.2 =
+- New: The Javascript debug mode does now enable the debug mode of the post communication and the debug mode of the ai_external.js automatically. This improves quick help a lot, as this can be enabled by parameter.
+- New: ?aiEDC=true can be also used to enable the debug console. ?aiEnableDebugConsole still works.
+- New: Two log levels instead of one are used now: .log() for info. .error() for configuration errors.
+- New: Optimzed performance when reading the options
+- New: Check for duplicate ids. As a duplicate id causes errors a new check was added that prints this problem into the console.
+- New: Optimized performace when you use AOSEO! They do execute shortcodes to get data for titles/descriptions. This leads to the problem that each shortcode get executed up to 3 additional times! Now the rendering of advanced iframe is limited to the body section and only a <!-- advanced iframe not rendered --> is added when debug mode is active. So if you check your source code and see this comment your page is now a little bit faster :). This is also reported as bug at AOSEO as they should cache this rendering and not execute it up to 3 times. On my demo page it happens in total 24! times. See: view-source:http://www.tinywebgallery.com/blog/advanced-iframe/advanced-iframe-pro-demo/show-only-a-part-of-the-iframe?aiEDC=true
+- New: Added an "Advanced iframe checklist". Read this first to have an optimal start: http://www.tinywebgallery.com/blog/advanced-iframe/advanced-iframe-checklist
+- New: Improved editor button. Now a updated way to insert the shortcode is used which should support most possible scenarios
+- New: ai.min.js is now default. If is only 48k instead of 79k.
+- New: ai.js/ai.min.js have now a debug mode. If you enable the internal debugger also ai.js does print additional messages which Javascript is called. this is very helpful especially if you have problems with the auto height on mobile devices.
+- New: Standalone jQuery version was updated to jQuery 3.5.1
+- New: Code refactorings. Some code was extracted nicely to classes. Further refactorings will follow in the next releases.
+- New: ai.min.js and ai_external.js are recreated after update to have the latest versions always.
+- New: All internal images where optimized.
+
 = 2021.1 =
 - New: Tested with WP 5.7
-- New: All internal images where optimized.
 - Fix: 3 links in the administration fixed. 
 - Fix: Auto popup demo was not working on https. Now this also works. 
 
@@ -211,10 +249,6 @@ select the one you like and save again.
 - Fix: enable_responsive_iframe gets !important at width, max-width, min-width settings to avoid that other scripts overwrite this
 - Fix: The origin detection for https was done by a wrong $_SERVER variable.
 - Fix: History link was fixed
-
-= 2020.8.1 =
-- New: Tested with WordPress 5.5.1
-- Fix: Javascript error in the ai_external.js was fixed.
 
 = 2020.8 =
 - New: WordPress 5.5 changed the behaviour of the parameter page in the url! You now get a 301 redirect on normal pages if you use ?page=XXX. Unfortunately this also kills url features of advanced iframe pro. You can now set "Fix WordPress 5.5 page parameter change" to true on the administration. Then you can again use ?page=abc for example again. Numeric values are still not allowed because removing this internally would kill the pagination where the page paremater is really used!
@@ -529,19 +563,6 @@ Fix: An error in ai_external.js was fixed which prevented the external workaroun
 - New: New help section postMessage comunication vs. iframe 
 - Fix: The reserved words link in URL forward parameters is now working
 - Fix: add a ; automatically after the style to avoid configuration errors
-
-= 7.4.3 =
-- Fix: iframe_redirect_url was brocken in 7.4.2 because of a missing ). 
-
-= 7.3.3 =                  
-- New: Support for Wordpress 4.7.4
-
-= 7.3.2 =
-- New: Support for Wordpress 4.7.3
-- Fix: Edit/view of files in the custom folder was not working anymore because of a WP change. Now this works again. The editor shows (inactive) as this files are in a folder with no active plugin directly.
-
-= 7.3.1 =
-- New: Support for Wordpress 4.7
 
 = 7.3 = 
 - New: The external workaround postMessage solution is now using a json structure to transfer the data. This is needed to enable the next feature

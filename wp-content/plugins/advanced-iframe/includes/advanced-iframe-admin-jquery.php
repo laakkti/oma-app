@@ -35,16 +35,20 @@ aiPostboxOpen("id-help-jquery", "Small jQuery help", $closedArray);
   			</thead>
   			<tbody>
   				<tr>
-  					<td class="left_td_colored">E</td>
-  					<td class="right_td_colored">Matches all elements with tag name E.</td>
+  					<td class="left_td_colored"><strong>E</strong></td>
+  					<td class="right_td_colored"><strong>Matches all elements with tag name E.</strong></td>
   				</tr>
                  <tr>
-  					<td class="left_td_colored">.i</td>
-  					<td class="right_td_colored">Matches all elements with the id i.</td>
+  					<td class="left_td_colored"><strong>#i</strong></td>
+  					<td class="right_td_colored"><strong>Matches all elements with the id="i".</strong></td>
   				</tr>
                 <tr>
-  					<td class="left_td_colored">.c</td>
-  					<td class="right_td_colored">Matches all elements with the class c.</td>
+  					<td class="left_td_colored"><strong>.c</strong></td>
+  					<td class="right_td_colored"><strong>Matches all elements with the class="c".</strong></td>
+  				</tr>
+				   <tr>
+  					<td class="left_td_colored"><strong>.c.d</strong></td>
+  					<td class="right_td_colored"><strong>Matches all elements with the class="c d"</strong>. So in the HTML they are separated by a space. In jQuery they both need to have a . in front without a space.</td>
   				</tr>
   				<tr>
   					<td class="left_td_colored">E F</td>
@@ -99,7 +103,7 @@ aiPostboxOpen("id-help-jquery", "Small jQuery help", $closedArray);
 				</table>
         
         <h4>Additional useful selectors</h4>
-      <p>These selectors are basic filters provided by jQuery I found useful using in this plugin. For more selectors and examples go to <a href="https://api.jquery.com/category/selectors" target="_blank">https://api.jquery.com//category/selectors</a>.</p>
+        <p>These selectors are basic filters provided by jQuery I found useful using in this plugin. For more selectors and examples go to <a href="https://api.jquery.com/category/selectors" target="_blank">https://api.jquery.com//category/selectors</a>.</p>
        <table cellspacing="0" cellpadding="0">
   			<thead>
           <tr>
@@ -119,17 +123,18 @@ aiPostboxOpen("id-help-jquery", "Small jQuery help", $closedArray);
   					<td class="right_td_colored">Selects all elements that are the nth-child of their parent.</td>
   				</tr>
         	</tbody>
-				</table>
+		</table>
         
         <h4>Examples</h4>
         <ul>
-		<li>$("div") selects all &lt;div&gt; elements</li>
-		<li>$("div a") selects all &lt;a&gt; elements within &lt;div&gt; elements</li>
+		<li><strong>$("div") selects all &lt;div&gt; elements</strong></li>
+		<li><strong>$("div a") selects all &lt;a&gt; elements within &lt;div&gt; elements</strong></li>	
+		<li><strong>$("div.someClass") selects all &lt;div&gt; elements with a class name of someClass</strong></li>
+		<li><strong>$(".someClass") selects all elements with class name someClass</strong></li>
+		<li><strong>$(".someClass.2ndClass") selects all elements with class="someClass 2ndClass"</strong></li>
+		<li>$("#testButton") selects the element with the id value of testButton</li>
 		<li>$("li##p") selects all &lt;p&gt; elements that are direct children of &lt;li&gt; elements</li>
 		<li>$("p:has(b)") selects all &lt;p&gt; elements that contain a &lt;b&gt; element</li>
-		<li>$("div.someClass") selects all &lt;div&gt; elements with a class name of someClass</li>
-		<li>$(".someClass") selects all elements with class name someClass</li>
-		<li>$("#testButton") selects the element with the id value of testButton</li>
 		<li>$("img[alt]") selects all &lt;img&gt; elements that possess an alt attribute</li>
 		<li>$("a[href$=.pdf]") selects all &lt;a&gt; elements that possess an href attribute that ends in .pdf</li>
         <li>$("a[href=\'example.html\']") selects all &lt;a&gt; elements that has the href example.html</li>

@@ -1,8 +1,8 @@
 /**
- *  Advanced iframe pro functions v2020.9
+ *  Advanced iframe pro functions v2021.5
 */
 /* jslint devel: true, unused: false */
-/* globals ai_show_id_only:false, aiIsIe8: false, aiChangeUrl: false, aiResizeIframeHeightId: false, aiShowIframeId: false, findAndReplaceDOMText: false */
+/* globals ai_show_id_only:false, aiIsIe8: false, aiChangeUrl: false, aiResizeIframeHeightId: false, aiShowIframeId: false, findAndReplaceDOMText: false, aiShowDebug: false */
 
 var aiEnableCookie=false;
 var aiId='';
@@ -13,6 +13,18 @@ var aiOnloadEventsCounter = 0;
 var aiCallbackExists = typeof aiReadyCallbacks !== 'undefined' && aiReadyCallbacks instanceof Array;
 var aiReadyCallbacks = aiCallbackExists ? aiReadyCallbacks : [];
 
+
+/**
+* The debug messages are enabled if you enable the debug console.
+*/
+function aiDebugExtended(message) {
+  if (typeof aiShowDebug !== 'undefined' && aiShowDebug) {
+    if (console && console.log) {
+      console.log("Advanced iframe: " + message);
+    }
+  }
+}
+
 /**
  *  This function resizes the iframe after loading to the height
  *  of then content of the iframe.
@@ -21,6 +33,7 @@ var aiReadyCallbacks = aiCallbackExists ? aiReadyCallbacks : [];
  *  be added every time otherwise and the iframe would grow,
  */
 function aiResizeIframe(obj, resizeWidth, resizeMinHeight) {
+  aiDebugExtended("aiResizeIframe");
   try {
     if (obj.contentWindow.location.href === 'about:blank') {
         return;
@@ -32,6 +45,7 @@ function aiResizeIframe(obj, resizeWidth, resizeMinHeight) {
       obj.height = Number(resizeMinHeight); // set to 1 because otherwise the iframe does never get smaller.
       obj.style.height = Number(resizeMinHeight) + 'px';
       var newheight = aiGetIframeHeight(obj);
+	  aiDebugExtended("aiResizeIframe - newheight: " + newheight);
       obj.height = newheight;
       obj.style.height = newheight + 'px';
 
@@ -77,8 +91,8 @@ function aiResizeIframe(obj, resizeWidth, resizeMinHeight) {
       setTimeout(function() { aiResizeIframe(obj, resizeWidth); },100);
     }
   } catch(e) {
-    if (console && console.log) {
-      console.log('Advanced iframe configuration error: You have enabled the resize of the iframe for pages on the same domain. But you use an iframe page on a different domain. You need to use the external workaround like described in the settings. Also check the next log. There the browser message for this error is displayed.');
+    if (console && console.error) {
+      console.error('Advanced iframe configuration error: You have enabled the resize of the iframe for pages on the same domain. But you use an iframe page on a different domain. You need to use the external workaround like described in the settings. Also check the next log. There the browser message for this error is displayed.');
       console.log(e);
     }
   }
@@ -144,6 +158,7 @@ function aiGetParentIframeWidth(obj) {
  *  Please read the documentation!
  */
 function aiResizeIframeHeightById(id, nHeight) {
+  aiDebugExtended("aiResizeIframeHeightById - id: " + id + ", nHeight: " + nHeight);
   try {
     var fCallback = window['resizeCallback' + id];
     fCallback();
@@ -162,8 +177,8 @@ function aiResizeIframeHeightById(id, nHeight) {
       parentResizeCall();
     }
   }  catch(e) {
-    if (console && console.log) {
-      console.log('Advanced iframe configuration error: The id of the parent and the external workaround are different! Check your settings.');
+    if (console && console.error) {
+      console.error('Advanced iframe configuration error: The id of the parent and the external workaround are different! Check your settings.');
       console.log(e);
     }
   }
@@ -179,12 +194,15 @@ function aiResizeIframeHeightById(id, nHeight) {
  * a jump to the top a delay of 1 sec is used for the increase of the counter.
  */
 function aiScrollToTop(id, position) {
+   aiDebugExtended("aiScrollToTop - id: " + id + ", position: " + position);
+  
   if (aiOnloadEventsCounter > 0) {
 	  var posTop = 0;
 	  if (position === 'iframe') {
 		posTop = jQuery('#' + id).offset().top;
 	  }
 	  setTimeout(function() {
+		 aiDebugExtended("aiScrollToTop - posTop: " + posTop);   
 		window.scrollTo(0, posTop);
 	  }, 100);   
   }
@@ -258,14 +276,15 @@ function aiEnableHeight() {
  * @param showElement the id, class (jQuery syntax) of the element that should be displayed.
  */
 function aiShowElementOnly( iframeId, showElement ) {
+  aiDebugExtended("aiShowElementOnly");
   try {
     var iframe = jQuery(iframeId).contents().find('body');
     var selectedBox = iframe.find(showElement).clone(true,true);
     iframe.find('*').not(jQuery('script')).remove();
     iframe.prepend(selectedBox);
   }  catch(e) {
-    if (console && console.log) {
-      console.log('Advanced iframe configuration error: You have enabled to show only one element of the iframe for pages on the same domain. But you use an iframe page on a different domain. You need to use the pro version of the external workaround like described in the settings. Also check the next log. There the browser message for this error is displayed.');
+    if (console && console.error) {
+      console.error('Advanced iframe configuration error: You have enabled to show only one element of the iframe for pages on the same domain. But you use an iframe page on a different domain. You need to use the pro version of the external workaround like described in the settings. Also check the next log. There the browser message for this error is displayed.');
       console.log(e);
     }
   }
@@ -303,6 +322,7 @@ function aiCheckIfValidTarget(evt, elements) {
 }
 
 function aiOpenSelectorWindow (url) {
+   aiDebugExtended("aiOpenSelectorWindow");
    var localWidth =  jQuery('#width').val();
    var localHeight = jQuery('#ai-height-0').val();
 
@@ -424,7 +444,6 @@ var aiInstance;
  *  on the admin page like enabling disabling fields...
  */
 function aiInitAdminConfiguration(isPro, acc_type) {
-
     // enable checkbox of onload_resize_delay and if resize is set to true external workaround is set to false
     if (jQuery('input[type=radio][name=onload_resize]:checked').val() === 'false') {
         aiDisableAiResizeOptions(true);
@@ -991,6 +1010,7 @@ function aiSettingsSearch(searchTerm, accType) {
  *  Width is read and the height is than calculated.
  */
 function aiResizeIframeRatio(obj, ratio) {
+   aiDebugExtended("aiResizeIframeRatio");
    var width = jQuery('#' + obj.id).width();
    var valueRatio = parseFloat(ratio.replace(',', '.'));
    var newHeight = Math.ceil(width * valueRatio);
@@ -1146,12 +1166,11 @@ function aiGenerateShortcode(isPro) {
        output += aiGenerateRadioShortcode('enable_external_height_workaround','external');
        output += aiGenerateRadioShortcode('hide_page_until_loaded_external','false');
        output += aiGenerateTextShortcode('pass_id_by_url');
+	   output += aiGenerateRadioShortcode('multi_domain_enabled','true');
        if (isPro === 'true') {
-	       output += aiGenerateRadioShortcode('multi_domain_enabled','true');
            output += aiGenerateRadioShortcode('use_post_message','true');
 	   } else {
-		   output += aiGenerateRadioShortcode('multi_domain_enabled','false');
-           output += aiGenerateRadioShortcode('use_post_message','false');
+		   output += aiGenerateRadioShortcode('use_post_message','false');
 	   }
        // additional files
        output += aiGenerateTextShortcode('additional_css');
@@ -1241,7 +1260,8 @@ function aiAddCssClassAllParents(element) {
 }
 
 function aiAutoZoomExternalHeight(id, width, height, responsive) {
-    var parentWidth = aiAutoZoomExternal(id, width, responsive);
+    aiDebugExtended("aiAutoZoomExternalHeight");
+	var parentWidth = aiAutoZoomExternal(id, width, responsive);
     var zoomRatio = window['zoom_' + id];
     var oldScrollposition = jQuery(document).scrollTop();
     var newHeight = Math.ceil(height*zoomRatio);
@@ -1252,6 +1272,7 @@ function aiAutoZoomExternalHeight(id, width, height, responsive) {
 
 
 function aiAutoZoomExternal(id, width, responsive) {
+   aiDebugExtended("aiAutoZoomExternal");
    var obj =  document.getElementById(id);
    var objAround =  document.getElementById('ai-zoom-div-' +id);
    var jObj = jQuery('#' + id);
@@ -1277,6 +1298,7 @@ function aiAutoZoomExternal(id, width, responsive) {
    return parentWidth;
 }
 function aiAutoZoom(id, responsive, ratio) {
+   aiDebugExtended("aiAutoZoom");
    var parts = ratio.split('|');
    ratio = parts[0];
    var width = -1;
@@ -1448,6 +1470,7 @@ function aiResetShowPartOfAnIframe(id) {
 }
 
 function aiShowLayerIframe(event, id, path, hideUntilLoaded, showLoadingIcon, keep, reload) {
+  aiDebugExtended("aiShowLayerIframe");
   keep = (keep === undefined) ? false : keep;
   reload = (reload === undefined) ? true : reload;
 
@@ -1486,7 +1509,7 @@ function aiShowLayerIframe(event, id, path, hideUntilLoaded, showLoadingIcon, ke
 }
 
 function aiHideLayerIframe(id, keep) {
-
+  aiDebugExtended("aiHideLayerIframe");
   jQuery('#' + id).hide();
   if (!keep) {
       jQuery('#' + id).attr('src', 'about:blank');
@@ -1535,6 +1558,7 @@ function aiCheckReload (link, id) {
  * existing parameter with the given url
  */
 function aiChangeUrlParam(loc, param, orig, prefix, isDirect) {
+   aiDebugExtended("aiChangeUrlParam");
    var newUrl;
    var keepSlash = false;
    
@@ -1679,8 +1703,8 @@ function aigetIframeLocation(id) {
     var location = document.getElementById(id).contentWindow.location;
     return encodeURIComponent(location);
   }  catch(e) {
-    if (console && console.log) {
-      console.log('Advanced iframe configuration error: You have enabled to add the url to the url on the same domain. But you use an iframe page on a different domain. You need to use the pro version of the external workaround like described in the settings. Also check the next log. There the browser message for this error is displayed.');
+    if (console && console.error) {
+      console.error('Advanced iframe configuration error: You have enabled to add the url to the url on the same domain. But you use an iframe page on a different domain. You need to use the pro version of the external workaround like described in the settings. Also check the next log. There the browser message for this error is displayed.');
       console.log(e);
     }
   }
@@ -1804,6 +1828,8 @@ function aiPresetFullscreen() {
  * when the page is read to aiReadyCallbacks
  */
 jQuery(document).ready(function() {
+	aiDebugExtended("document.ready called");
+   
 	// wordpress adds often p elements that have margins we remove here. 
 	jQuery('iframe').parent('p').css('margin','0');
 	
@@ -1851,7 +1877,7 @@ jQuery(document).ready(function() {
                 var newHeight = parseInt(newHeightRaw,10);
                 var data = { 'aitype' : 'height', 'height' : newHeight, 'id' : ai_show_id_only};
                 var json_data = JSON.stringify(data);
-                parent.postMessage(json_data, '*');
+                window.parent.postMessage(json_data, '*');
             }
        }
     }
@@ -1872,8 +1898,8 @@ function aiProcessMessage(event,id,debug) {
     // Result is not expected so we try if data is an object already
     // because a converter was not implemented properly.
      if (debug === 'debug' && console && console.log) {
-          console.log('The received message cannot be parsed and seems not to belong to advanced iframe pro. Please disable the postMessage debug mode if this o.k. and that this message is not shown anymore.');
-          console.log(e);
+          console.log('Advanced iframe: The received message cannot be parsed and seems not to belong to advanced iframe pro. Please disable the postMessage debug mode if this o.k. and that this message is not shown anymore.');
+          console.log("Advanced iframe: Unknown event: ", event);
         }
     var jsObject = event.data; 
   }  
@@ -1900,11 +1926,11 @@ function aiProcessMessage(event,id,debug) {
               }
             }
           } 
-      }
-    }
+        } 
+	  }
 	} catch(e) {
         if (debug === 'debug' && console && console.log) {
-          console.log('The received message do not belong to advanced iframe pro. Please disable the postMessage debug mode if this o.k. and that this message is not shown anymore.');
+          console.log('Advanced iframe: The received message do not belong to advanced iframe pro. Please disable the postMessage debug mode if this o.k. and that this message is not shown anymore.');
           console.log(e);
         }
   }
@@ -2002,8 +2028,8 @@ function aiRemoveElementsFromHeight(id,height,removeElements) {
 			  totalHeight += parseInt(el);
 			}
 		}  catch(e) {
-			if (console && console.log) {
-			  console.log('Advanced iframe configuration error: The configuration of remove_elements_from_height "'+removeElements+'" is invalid. Please check if the elements you defined do exist and ids/classes are defined properly.');
+			if (console && console.error) {
+			  console.error('Advanced iframe configuration error: The configuration of remove_elements_from_height "'+removeElements+'" is invalid. Please check if the elements you defined do exist and ids/classes are defined properly.');
 			  console.log(e);
 			}
 		  }
@@ -2013,6 +2039,8 @@ function aiRemoveElementsFromHeight(id,height,removeElements) {
 }
 
 function aiTriggerAutoOpen(id, selector, autoclickDelay, hideTime) {
+	aiDebugExtended("aiTriggerAutoOpen");
+   
 	if (autoclickDelay === 0) {
 		aiOpenIframeOnClick(id, selector);
 	} else {

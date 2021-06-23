@@ -597,6 +597,7 @@ function printTextInputSrc($isPro, $options, $label, $id, $description, $type = 
         if ( false === $result ) { 
             $results = ai_checkUrlStatus(array($options[$id]));
             $result = $results[$options[$id]];
+            $result['handle'] = ''; // handle cannot be serialzed in php 8
             set_transient( $cache_key, $result, 3600);
         } else {
 			$was_cached = true;
@@ -1124,17 +1125,6 @@ function renderExternalWorkaroundIcon($show)
     }
 }
 
-
-function printError($message)
-{
-    echo '   
-   <div class="error">
-      <p><strong>' . $message . '
-         </strong>
-      </p>
-   </div>';
-}
-
 function printMessage($message)
 {
     echo '   
@@ -1209,20 +1199,20 @@ function aiCreateFile($config_id, $filenamedir, $prefix, $postfix, $type = 'conf
         // create custom dir
         if (!file_exists($filenamedir)) {
             if (!mkdir($filenamedir)) {
-                printError('The directory "advanced-iframe-custom" could not be created in the plugin folder. Custom files are stored in this directory because Wordpress does delete the normal plugin folder during an update. Please create the folder manually.');
+                AdvancedIframeHelper::aiPrintError('The directory "advanced-iframe-custom" could not be created in the plugin folder. Custom files are stored in this directory because Wordpress does delete the normal plugin folder during an update. Please create the folder manually.');
                 return;
             }
         }
         $filename = $filenamedir . '/' . $prefix . '_' . $config_id . $postfix;
         if (file_exists($filename)) {
-            printError($prefix . '_' . $config_id . ' exists. Please select a different name');
+            AdvancedIframeHelper::aiPrintError($prefix . '_' . $config_id . ' exists. Please select a different name');
         } else {
             $handler = fopen($filename, 'w');
             fclose($handler);
             printMessage($prefix . '_' . $config_id . $postfix . ' created.');
         }
     } else {
-        printError("This filename is not valid");
+        AdvancedIframeHelper::aiPrintError("This filename is not valid");
     }
 }
 
@@ -1235,12 +1225,11 @@ function aiRemoveFile($config_id, $filenamedir, $prefix, $postfix, $type = 'conf
             @unlink($filename);
             printMessage($prefix . '_' . $config_id . $postfix . ' was removed.');
         } else {
-            printError($prefix . '_' . $config_id . $postfix . ' does not exist.');
+            AdvancedIframeHelper::aiPrintError($prefix . '_' . $config_id . $postfix . ' does not exist.');
         }
     } else {
-        printError("This filename is not valid");
+        AdvancedIframeHelper::aiPrintError("This filename is not valid");
     }
-
 }
 
 function clearstatscache($devOptions)
@@ -1476,8 +1465,8 @@ function ai_checkUrlStatus($urls, $agent = '')
     }
     curl_multi_close($mh);
 
-// echo "Result: <br>";
-// print_r ($result_array_all);
+    // echo "Result: <br>";
+    // print_r ($result_array_all);
     return $result_array_all;
 }
 
